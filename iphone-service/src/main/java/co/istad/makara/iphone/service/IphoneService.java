@@ -1,6 +1,6 @@
 package co.istad.makara.iphone.service;
 
-import com.pesexpo.iphoneservice.IphoneResponse;
+import co.istad.makara.iphone.IphoneResponse;
 
 import java.util.List;
 

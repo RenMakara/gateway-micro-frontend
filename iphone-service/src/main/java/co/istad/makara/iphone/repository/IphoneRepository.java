@@ -1,6 +1,6 @@
 package co.istad.makara.iphone.repository;
 
-import com.pesexpo.iphoneservice.domain.IphoneProduct;
+import co.istad.makara.iphone.domain.IphoneProduct;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,8 +1,8 @@
 package co.istad.makara.iphone.controller;
 
 
-import com.pesexpo.iphoneservice.IphoneResponse;
-import com.pesexpo.iphoneservice.service.IphoneService;
+import co.istad.makara.iphone.IphoneResponse;
+import co.istad.makara.iphone.service.IphoneService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

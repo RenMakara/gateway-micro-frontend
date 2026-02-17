@@ -1,9 +1,9 @@
 package co.istad.makara.iphone.service.impl;
 
 
-import com.pesexpo.iphoneservice.IphoneResponse;
-import com.pesexpo.iphoneservice.repository.IphoneRepository;
-import com.pesexpo.iphoneservice.service.IphoneService;
+import co.istad.makara.iphone.IphoneResponse;
+import co.istad.makara.iphone.repository.IphoneRepository;
+import co.istad.makara.iphone.service.IphoneService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
