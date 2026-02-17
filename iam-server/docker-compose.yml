@@ -1,0 +1,22 @@
+
+services:
+  iam-db:
+    image: postgres:17.5-bullseye
+    container_name: iam-db
+    environment:
+      POSTGRES_USER: itpusr
+      POSTGRES_PASSWORD: itp@168
+      POSTGRES_DB: iam-db
+    ports:
+      - "16850:5432"
+    volumes:
+      - iam-micro-vol:/var/lib/postgresql/data
+    networks:
+      - itp-net
+  # Create docker volume
+volumes:
+  iam-micro-vol:
+  # Bind network
+networks:
+  itp-net:
+    external: true
