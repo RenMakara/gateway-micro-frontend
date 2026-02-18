@@ -1,0 +1,58 @@
+server:
+  port: 3333
+spring:
+  application:
+    name: front-bff
+  # configuration cloud-gateway
+  cloud:
+    gateway:
+      server:
+        webflux:
+          discovery:
+            locator:
+              lower-case-service-id: true
+              enabled: false
+          routes:
+            - id: iphone-api
+              uri: lb://IPHONE-SERVICE
+              predicates:
+                - Path=/api/v1/iphones/**
+              filters:
+                - TokenRelay=
+                - SaveSession
+
+
+            - id: frontbff
+              uri: http://localhost:3000
+              predicates:
+                - Path=/**
+
+  # configuration oauth2-client
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:9999
+
+      client:
+        provider:
+          itp-frontbff:
+            issuer-uri: http://localhost:9999
+        registration:
+          itp-frontbff:
+            provider: itp-frontbff
+            client-id: itp-frontbff
+            client-secret: qwerqwer
+            redirect-uri: http://localhost:3333/login/oauth2/code/itp-frontbff
+            authorization-grant-type:
+              - authorization_code
+            scope:
+              - openid # Auto issue access token
+              - profile # Get profile
+              - email # Get email
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.cloud.gateway: DEBUG
+    org.springframework.cloud.gateway.event: TRACE
