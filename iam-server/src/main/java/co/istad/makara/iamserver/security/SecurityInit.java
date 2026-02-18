@@ -46,8 +46,8 @@ public class SecurityInit {
             user.setEmail("it.makara@gmail.com");
             user.setDob(LocalDate.of(2003, 1, 14));
             user.setGender("Male");
-            user.setProfileImage("default_profile.jpg");
-            user.setCoverImage("default_cover.jpg");
+            user.setProfileImage("https://i.pinimg.com/736x/e7/57/36/e75736df1b0c3edf3004004dbef6e1d5.jpg");
+            user.setCoverImage("https://i.pinimg.com/736x/50/d7/0f/50d70f994bb6dfbceae91a4a8ffcdfe6.jpgjpg");
             user.setFamilyName("Ren");
             user.setGivenName("Makara");
             user.setPhoneNumber("0983478329");
@@ -171,6 +171,56 @@ public class SecurityInit {
         }
         if (registeredClient3 == null) {
             jpaRegisteredClientRepository.save(itpAdminBff);
+        }
+
+    }
+
+    @PostConstruct
+    void initOAuth3() {
+
+        TokenSettings tokenSettings = TokenSettings.builder()
+                .accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED)
+                .accessTokenTimeToLive(Duration.ofDays(3))
+                .reuseRefreshTokens(false) // refresh token rotation
+                .refreshTokenTimeToLive(Duration.ofDays(5))
+                .build();
+
+        ClientSettings clientSettings = ClientSettings.builder()
+                .requireProofKey(true)
+                .requireAuthorizationConsent(false)
+                .build();
+
+        var itpFrontBff = RegisteredClient.withId("itp-frontbff")
+                .clientId("itp-frontbff")
+                .clientSecret(passwordEncoder.encode("qwerqwer")) // store in secret manager
+                .scopes(scopes -> {
+                    scopes.add(OidcScopes.OPENID); // required!
+                    scopes.add(OidcScopes.PROFILE);
+                    scopes.add(OidcScopes.EMAIL);
+                })
+                .redirectUris(uris -> {
+                    uris.add("http://localhost:3333/login/oauth2/code/itp-frontbff");
+                    uris.add("http://localhost:3333");
+                })
+                .postLogoutRedirectUris(uris -> {
+                    uris.add("http://localhost:3333");
+                    uris.add("http://localhost:3333/");
+                })
+                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC) //TODO: grant_type:client_credentials, client_id & client_secret, redirect_uri
+                .authorizationGrantTypes(grantTypes -> {
+                    grantTypes.add(AuthorizationGrantType.AUTHORIZATION_CODE);
+                    grantTypes.add(AuthorizationGrantType.REFRESH_TOKEN);
+                    grantTypes.add(AuthorizationGrantType.CLIENT_CREDENTIALS);
+                })
+                .clientSettings(clientSettings)
+                .tokenSettings(tokenSettings)
+                .build();
+
+        RegisteredClient registeredClient2 = jpaRegisteredClientRepository.findByClientId("itp-frontbff");
+        log.info("Registered client: {}", registeredClient2);
+
+        if (registeredClient2 == null) {
+            jpaRegisteredClientRepository.save(itpFrontBff);
         }
 
     }

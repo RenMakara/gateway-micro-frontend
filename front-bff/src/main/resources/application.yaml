@@ -1,6 +1,5 @@
 server:
   port: 3333
-
 spring:
   application:
     name: front-bff
@@ -21,10 +20,6 @@ spring:
               filters:
                 - TokenRelay=
                 - SaveSession
-                - name: CircuitBreaker
-                  args:
-                    name: iphoneApiCircuit
-                    fallbackUri: forward:/fallback/iphone-api
 
             - id: frontbff
               uri: http://localhost:3000
@@ -55,12 +50,12 @@ spring:
               - profile # Get profile
               - email # Get email
 
-
-eureka:
-  instance:
-    instance-id: ${spring.application.name}
-    prefer-ip-address: true
-
+#
+#eureka:
+#  instance:
+#    instance-id: ${spring.application.name}
+#    prefer-ip-address: true
+#
 logging:
   level:
     org.springframework.security: DEBUG
