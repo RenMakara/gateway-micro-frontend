@@ -1,13 +1,11 @@
-package co.istad.makara.iamserver.features.user;
+package co.istad.makara.iamserver.feature.user.repository;
 
 import co.istad.makara.iamserver.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-@Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    Optional<User> findByUsername(String username);
 
+    Optional<User> findByUsername(String username);
 }

@@ -10,9 +10,9 @@ import lombok.Setter;
 
 import java.time.Instant;
 
+@Entity
 @Getter
 @Setter
-@Entity
 @NoArgsConstructor
 @Table(name = "authorizations")
 public class Authorization {

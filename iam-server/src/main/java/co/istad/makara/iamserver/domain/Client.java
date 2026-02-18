@@ -10,11 +10,11 @@ import lombok.Setter;
 
 import java.time.Instant;
 
-@Getter
-@Setter
 @Entity
-@NoArgsConstructor
 @Table(name = "clients")
+@NoArgsConstructor
+@Setter
+@Getter
 public class Client {
     @Id
     private String id;

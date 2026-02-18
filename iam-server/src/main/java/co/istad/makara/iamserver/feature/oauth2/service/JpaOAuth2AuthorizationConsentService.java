@@ -1,9 +1,7 @@
-package co.istad.makara.iamserver.features.oauth2;
-
-import java.util.HashSet;
-import java.util.Set;
+package co.istad.makara.iamserver.feature.oauth2.service;
 
 import co.istad.makara.iamserver.domain.AuthorizationConsent;
+import co.istad.makara.iamserver.feature.oauth2.repository.AuthorizationConsentRepository;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -14,6 +12,9 @@ import org.springframework.security.oauth2.server.authorization.client.Registere
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Component
 public class JpaOAuth2AuthorizationConsentService implements OAuth2AuthorizationConsentService {

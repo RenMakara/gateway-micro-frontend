@@ -19,3 +19,9 @@ spring:
     oauth2:
       authorizationserver:
         issuer: http://localhost:9999
+
+logging:
+  level.org.springframework.security: DEBUG
+  level.org.springframework.security.oauth2.server.authorization: TRACE
+  level.org.springframework.security.oauth2.server.authorization.oidc.authentication: TRACE
+

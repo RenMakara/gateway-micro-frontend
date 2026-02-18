@@ -1,13 +1,12 @@
-package co.istad.makara.iamserver.features.oauth2;
-
-import java.util.Optional;
-
+package co.istad.makara.iamserver.feature.oauth2.repository;
 
 import co.istad.makara.iamserver.domain.Authorization;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
 
 @Repository
 public interface AuthorizationRepository extends JpaRepository<Authorization, String> {

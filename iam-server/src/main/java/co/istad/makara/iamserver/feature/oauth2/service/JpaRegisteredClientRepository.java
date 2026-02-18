@@ -1,13 +1,8 @@
-package co.istad.makara.iamserver.features.oauth2;
+package co.istad.makara.iamserver.feature.oauth2.service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-
+import co.istad.makara.iamserver.config.CustomUserDetails;
 import co.istad.makara.iamserver.domain.Client;
-import co.istad.makara.iamserver.security.CustomUserDetails;
+import co.istad.makara.iamserver.feature.oauth2.repository.ClientRepository;
 import org.springframework.security.jackson.SecurityJacksonModules;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
@@ -24,6 +19,11 @@ import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 @Component
 public class JpaRegisteredClientRepository implements RegisteredClientRepository {
     private final ClientRepository clientRepository;
@@ -33,20 +33,21 @@ public class JpaRegisteredClientRepository implements RegisteredClientRepository
         Assert.notNull(clientRepository, "clientRepository cannot be null");
         this.clientRepository = clientRepository;
 
-        ClassLoader classLoader = JpaRegisteredClientRepository.class.getClassLoader();
+        // old code (spring security version < 7)
+//        ClassLoader classLoader = JpaRegisteredClientRepository.class.getClassLoader();
+//        List<Module> securityModules = SecurityJackson2Modules.getModules(classLoader);
+//        this.objectMapper.registerModules(securityModules);
+//        this.objectMapper.registerModule(new OAuth2AuthorizationServerJackson2Module());
 
+        ClassLoader classLoader = getClass().getClassLoader();
         BasicPolymorphicTypeValidator.Builder builder = BasicPolymorphicTypeValidator.builder()
                 .allowIfSubType(CustomUserDetails.class);
 
         this.objectMapper = JsonMapper.builder()
-                .addModules(SecurityJacksonModules.getModules(classLoader,builder))
+                .addModules(SecurityJacksonModules.getModules(classLoader, builder))
                 .addModule(new OAuth2AuthorizationServerJacksonModule())
                 .build();
 
-        //ClassLoader classLoader = JpaRegisteredClientRepository.class.getClassLoader();
-        //List<Module> securityModules = SecurityJacksonModules.getModules(classLoader);
-        //this.objectMapper.registerModules(securityModules);
-        //this.objectMapper.registerModule(new OAuth2AuthorizationServerJacksonModule());
     }
 
     @Override

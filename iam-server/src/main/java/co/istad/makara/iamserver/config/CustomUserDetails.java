@@ -1,19 +1,26 @@
-package co.istad.makara.iamserver.security;
+package co.istad.makara.iamserver.config;
 
+
+import co.istad.makara.iamserver.domain.User;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import co.istad.makara.iamserver.domain.User;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+/**
+ * Custom UserDetails implementation.
+ * Replace the placeholder methods with real data from your database/entity.
+ */
 @Getter
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS)
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -35,6 +42,7 @@ public class CustomUserDetails implements UserDetails {
     private final Boolean accountNonLocked;
     private final Boolean credentialsNonExpired;
     private final Boolean enabled;
+    private final Set<GrantedAuthority> authorities;
 
     // Constructor for creating from User entity (used in UserDetailsService)
     public CustomUserDetails(User user) {
@@ -50,11 +58,13 @@ public class CustomUserDetails implements UserDetails {
         this.dob = user.getDob();
         this.profileImage = user.getProfileImage();
         this.coverImage = user.getCoverImage();
-        this.accountNonExpired = user.getAccountNonExpired();
-        this.accountNonLocked = user.getAccountNonLocked();
-        this.credentialsNonExpired = user.getCredentialsNonExpired();
+        this.accountNonExpired = user.isAccountNonExpired();
+        this.accountNonLocked = user.isAccountNonLocked();
+        this.credentialsNonExpired = user.isCredentialsNonExpired();
         this.enabled = user.getIsEnabled();
-
+        this.authorities = user.getAuthorities().stream()
+                .map(userAuth -> new SimpleGrantedAuthority(Objects.requireNonNull(userAuth.getAuthority())))
+                .collect(Collectors.toSet());
     }
 
 
@@ -76,7 +86,8 @@ public class CustomUserDetails implements UserDetails {
             @JsonProperty("accountNonExpired") Boolean accountNonExpired,
             @JsonProperty("accountNonLocked") Boolean accountNonLocked,
             @JsonProperty("credentialsNonExpired") Boolean credentialsNonExpired,
-            @JsonProperty("enabled") Boolean enabled) {
+            @JsonProperty("enabled") Boolean enabled,
+            @JsonProperty("authorities") Set<GrantedAuthority> authorities) {
         this.id = id;
         this.uuid = uuid;
         this.username = username;
@@ -93,13 +104,13 @@ public class CustomUserDetails implements UserDetails {
         this.accountNonLocked = accountNonLocked;
         this.credentialsNonExpired = credentialsNonExpired;
         this.enabled = enabled;
-
+        this.authorities = authorities;
     }
 
-
+    // UserDetails interface methods
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return authorities;
     }
 
     @Override
@@ -136,6 +147,19 @@ public class CustomUserDetails implements UserDetails {
     public String getFullName() {
         return givenName + " " + familyName;
     }
+//
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (o == null || getClass() != o.getClass()) return false;
+//        CustomUserDetails that = (CustomUserDetails) o;
+//        return Objects.equals(uuid, that.uuid);
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(uuid);
+//    }
 
     @Override
     public boolean equals(Object o) {
@@ -147,6 +171,6 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getUsername()); /// Generate hashCode based on the same field
+        return Objects.hash(getUsername()); // Hash based on the same unique field
     }
 }

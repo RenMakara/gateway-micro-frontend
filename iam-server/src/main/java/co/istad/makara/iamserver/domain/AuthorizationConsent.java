@@ -8,11 +8,11 @@ import lombok.Setter;
 import java.io.Serializable;
 import java.util.Objects;
 
+@Entity
 @Setter
 @Getter
 @NoArgsConstructor
-@Entity
-@Table(name = "authorization_consent")
+@Table(name = "authorization_consents")
 @IdClass(AuthorizationConsent.AuthorizationConsentId.class)
 public class AuthorizationConsent {
     @Id
@@ -22,13 +22,11 @@ public class AuthorizationConsent {
     @Column(length = 1000)
     private String authorities;
 
-
-    @Getter
     @Setter
+    @Getter
     public static class AuthorizationConsentId implements Serializable {
         private String registeredClientId;
         private String principalName;
-
 
         @Override
         public boolean equals(Object o) {

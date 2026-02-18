@@ -1,4 +1,4 @@
-package co.istad.makara.iamserver.features.oauth2;
+package co.istad.makara.iamserver.feature.oauth2.repository;
 
 import co.istad.makara.iamserver.domain.Client;
 import org.springframework.data.jpa.repository.JpaRepository;

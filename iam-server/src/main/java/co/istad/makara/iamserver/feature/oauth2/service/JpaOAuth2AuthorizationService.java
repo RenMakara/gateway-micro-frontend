@@ -1,23 +1,11 @@
-package co.istad.makara.iamserver.features.oauth2;
+package co.istad.makara.iamserver.feature.oauth2.service;
 
-import java.time.Instant;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Consumer;
-
-
+import co.istad.makara.iamserver.config.CustomUserDetails;
 import co.istad.makara.iamserver.domain.Authorization;
-import co.istad.makara.iamserver.security.CustomUserDetails;
+import co.istad.makara.iamserver.feature.oauth2.repository.AuthorizationRepository;
 import org.springframework.dao.DataRetrievalFailureException;
-
 import org.springframework.security.jackson.SecurityJacksonModules;
-import org.springframework.security.oauth2.core.AuthorizationGrantType;
-import org.springframework.security.oauth2.core.OAuth2AccessToken;
-import org.springframework.security.oauth2.core.OAuth2DeviceCode;
-import org.springframework.security.oauth2.core.OAuth2RefreshToken;
-import org.springframework.security.oauth2.core.OAuth2Token;
-import org.springframework.security.oauth2.core.OAuth2UserCode;
+import org.springframework.security.oauth2.core.*;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.endpoint.OidcParameterNames;
@@ -27,7 +15,6 @@ import org.springframework.security.oauth2.server.authorization.OAuth2Authorizat
 import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
-
 import org.springframework.security.oauth2.server.authorization.jackson.OAuth2AuthorizationServerJacksonModule;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
@@ -36,6 +23,11 @@ import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
+
+import java.time.Instant;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Consumer;
 
 @Component
 public class JpaOAuth2AuthorizationService implements OAuth2AuthorizationService {
@@ -49,13 +41,19 @@ public class JpaOAuth2AuthorizationService implements OAuth2AuthorizationService
         this.authorizationRepository = authorizationRepository;
         this.registeredClientRepository = registeredClientRepository;
 
-        ClassLoader classLoader = JpaRegisteredClientRepository.class.getClassLoader();
-                BasicPolymorphicTypeValidator.Builder builder = BasicPolymorphicTypeValidator.builder()
+          // old code (spring security version < 7)
+//        ClassLoader classLoader = JpaOAuth2AuthorizationService.class.getClassLoader();
+//        List<Module> securityModules = SecurityJackson2Modules.getModules(classLoader);
+//        this.objectMapper.registerModules(securityModules);
+//        this.objectMapper.registerModule(new OAuth2AuthorizationServerJackson2Module());
+
+
+        ClassLoader classLoader = getClass().getClassLoader();
+        BasicPolymorphicTypeValidator.Builder builder = BasicPolymorphicTypeValidator.builder()
                 .allowIfSubType(CustomUserDetails.class);
 
-
         this.objectMapper = JsonMapper.builder()
-                .addModules(SecurityJacksonModules.getModules(classLoader,builder))
+                .addModules(SecurityJacksonModules.getModules(classLoader, builder))
                 .addModule(new OAuth2AuthorizationServerJacksonModule())
                 .build();
     }
